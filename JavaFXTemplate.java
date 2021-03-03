@@ -13,6 +13,7 @@ public class JavaFXTemplate extends Application {
 	private BorderPane borderPane;
 	private Button b1;
 	private VBox root;
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		launch(args);
@@ -22,7 +23,7 @@ public class JavaFXTemplate extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
-		primaryStage.setTitle("Welcome to Connect 4");
+		primaryStage.setTitle("Welcome to JavaFX");
 		b1 = new Button("Start");
 		b1.setPrefWidth(100);
 		root = new VBox(10, b1);
@@ -38,7 +39,7 @@ public class JavaFXTemplate extends Application {
 		};
 		// sets the action
 		b1.setOnAction(handler);
-		Scene scene = new Scene(new VBox(), 700,700);
+		Scene scene = new Scene(borderPane, 500,500);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
