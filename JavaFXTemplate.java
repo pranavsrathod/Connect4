@@ -1,12 +1,18 @@
 import javafx.application.Application;
-
+import javafx.scene.layout.BorderPane;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class JavaFXTemplate extends Application {
-
+	private BorderPane borderPane;
+	private Button b1;
+	private VBox root;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		launch(args);
@@ -17,10 +23,21 @@ public class JavaFXTemplate extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		primaryStage.setTitle("Welcome to Connect 4");
-		
-		
-		
-				
+		b1 = new Button("Start");
+		b1.setPrefWidth(100);
+		root = new VBox(10, b1);
+		/*
+		 add an image to the background
+		 */
+		borderPane = new BorderPane();
+		borderPane.setCenter(b1);
+		EventHandler<ActionEvent> handler = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				// calling the gameButton
+			}
+		};
+		// sets the action
+		b1.setOnAction(handler);
 		Scene scene = new Scene(new VBox(), 700,700);
 		primaryStage.setScene(scene);
 		primaryStage.show();
