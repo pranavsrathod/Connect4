@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,8 @@ public class JavaFXTemplate extends Application {
 	private Button options;
 	private VBox root;
 	private HBox menuBar;
+	private GridPane board;
+	GameButton array[][];
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -64,8 +67,17 @@ public class JavaFXTemplate extends Application {
 	}
 
 	public Scene gameScene() {
-		Label label = new Label("-------------- !! Game Started !! --------------");
-		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		array = new GameButton[7][6];
+		board = new GridPane();
+		board.setVgap(10);
+		board.setHgap(10);
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 6; j++) {
+				GameButton box = new GameButton();
+				board.add(box, i, j);
+				array[i][j] = box;
+			}
+		}
 		gamePlay = new Button("Game Play");
 		//gamePlay.setPrefWidth(50);
 		gamePlay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
