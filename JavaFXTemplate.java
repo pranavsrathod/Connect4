@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 public class JavaFXTemplate extends Application {
 	private BorderPane borderPane;
-	EventHandler<ActionEvent> startButton, backBotton;
+	EventHandler<ActionEvent> moveButton, moveBottom;
 	private Button b1;
 	HashMap<String, Scene> sceneMap;
 	private Button gamePlay;
@@ -27,7 +27,9 @@ public class JavaFXTemplate extends Application {
 	private Button options;
 	private VBox root;
 	private HBox menuBar;
+	private HBox moveBar;
 	private GridPane board;
+	private int playerCounter;
 	GameButton array[][];
 	
 	public static void main(String[] args) {
@@ -53,8 +55,9 @@ public class JavaFXTemplate extends Application {
 		 add an image to the background
 		 */
 		borderPane = new BorderPane();
-		borderPane.setCenter(label);
-		borderPane.setCenter(b1);
+//		borderPane.setCenter(label);
+//		borderPane.setCenter(b1);
+		borderPane.setCenter(root);
 		b1.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
 		Scene welcome = new Scene(borderPane, 500,500);
 		// ------------------------------------------------------------------------------------------------------------------
@@ -65,12 +68,24 @@ public class JavaFXTemplate extends Application {
 		primaryStage.setScene(sceneMap.get("welcome"));
 		primaryStage.show();
 	}
+	public void setCounter(int i) {
+		playerCounter = i;
+	}
+	public int getCounter() {
+		return playerCounter;
+	}
 
 	public Scene gameScene() {
+		Label label = new Label("MOVE : ");
+		Label validity = new Label("No - Move");
+		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		//gamePlay.setPrefWidth(50);
 		array = new GameButton[7][6];
 		board = new GridPane();
 		board.setVgap(10);
 		board.setHgap(10);
+		setCounter(0);
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				GameButton box = new GameButton();
@@ -78,8 +93,50 @@ public class JavaFXTemplate extends Application {
 				array[i][j] = box;
 			}
 		}
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 5; j++) {
+			GameButton box = array[i][j];
+			final int boxcol = j;
+			final int boxrow = i;
+			final int playCount = getCounter();
+			box.setOnAction(e -> {
+				if(array[boxrow][boxcol + 1].isDisabled())
+				{
+					box.setDisable(true);
+					if (playCount % 2 == 0) {
+						box.setStyle("-fx-background-color: lightRed;");
+					} else {
+						box.setStyle("-fx-background-color: lightPink;");
+					}
+					validity.setText("On [" + boxcol + "] [" + boxrow + "]");
+					setCounter(playCount + 1);
+				} else {
+					validity.setText("Invalid Move");
+				}
+				});
+		}
+		}
+		for (int i = 0; i < 7; i++) {
+			GameButton box = array[i][5];
+			final int boxcol = i;
+			final int boxrow = 5;
+			final int playCount = getCounter();
+			box.setOnAction(e -> {
+				box.setDisable(true);
+				if (playCount % 2 == 0) {
+					box.setStyle("-fx-color: lightRed;");
+				} else {
+					box.setStyle("-fx-color: lightPink;");
+				}
+				validity.setText("On [" + boxcol + "] [" + boxrow + "]");
+				setCounter(playCount + 1);
+				});
+		}
+		moveBar = new HBox(50, label, validity);
+		
+		
+//		_________________________________________________________________________________________________________________________
 		gamePlay = new Button("Game Play");
-		//gamePlay.setPrefWidth(50);
 		gamePlay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		
 		theme = new Button("Theme");
@@ -93,9 +150,9 @@ public class JavaFXTemplate extends Application {
 		
 		BorderPane pane = new BorderPane();
 		pane.setTop(menuBar);
-		pane.setCenter(label);
+		pane.setCenter(board);
 		pane.setStyle("-fx-background-color: lightBlue;");
-		return new Scene(pane, 600, 600);
+		return new Scene(new VBox(20, menuBar, pane, moveBar), 600, 600);
 	}
 	
 
