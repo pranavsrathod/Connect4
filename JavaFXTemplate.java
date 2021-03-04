@@ -14,20 +14,33 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
-public class JavaFXTemplate extends Application {
-	private BorderPane borderPane;
+public class JavaFXTemplate extends Application {	private BorderPane borderPane;
+	EventHandler<ActionEvent> moveButton, moveBottom;
 	private Button b1;
 	HashMap<String, Scene> sceneMap;
-	private Button gamePlay;
-	private Button theme;
-	private Button options;
-	private VBox root;
-	private HBox menuBar;
+//	private Button gamePlay;
+//	private Button theme;
+//	private Button options;
+//	private HBox menuBar;
+	private MenuBar menu;
+	private Menu gamePlay;
+	private MenuItem reverse;
+	private Menu theme;
+	private MenuItem theme1;
+	private MenuItem theme2;
+	private Menu options;
+	private MenuItem exit;
+	private MenuItem howToPlay;
+	private MenuItem newGame;
 	private HBox moveBar;
+	private VBox root;
 	private GridPane board;
-	int player;
+	private int player;
 	GameButton array[][];
 	
 	public static void main(String[] args) {
@@ -128,23 +141,36 @@ public class JavaFXTemplate extends Application {
 		
 		
 //		_________________________________________________________________________________________________________________________
-		gamePlay = new Button("Game Play");
-		gamePlay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+// 		gamePlay = new Button("Game Play");
+// 		gamePlay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		
-		theme = new Button("Theme");
-		theme.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-		//theme.setPrefWidth(50);
+// 		theme = new Button("Theme");
+// 		theme.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+// 		//theme.setPrefWidth(50);
 		
-		options = new Button("Options");
-		options.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-		//options.setPrefWidth(50);
-		menuBar = new HBox(150, gamePlay, theme, options);
-		
+// 		options = new Button("Options");
+// 		options.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+// 		//options.setPrefWidth(50);
+// 		menuBar = new HBox(150, gamePlay, theme, options);
+		menu = new MenuBar();
+		gamePlay = new Menu("gamePlay");
+		theme = new Menu("theme");
+		options = new Menu("options");
+		reverse = new MenuItem("reverse");
+		theme1 = new MenuItem("theme1");
+		theme2 = new MenuItem("theme2");
+		howToPlay = new MenuItem("howToPlay");
+		exit = new MenuItem("exit");
+		newGame = new MenuItem("newGame");
+		gamePlay.getItems().add(reverse);
+		theme.getItems().addAll(theme1, theme2);
+		options.getItems().addAll(howToPlay, newGame, exit);
+		menu.getMenus().addAll(gamePlay, theme, options);
 		BorderPane pane = new BorderPane();
-		pane.setTop(menuBar);
+// 		pane.setTop(menuBar);
 		pane.setCenter(board);
 		pane.setStyle("-fx-background-color: lightBlue;");
-		return new Scene(new VBox(20, menuBar, pane, moveBar), 600, 600);
+		return new Scene(new VBox(20, menu, pane, moveBar), 600, 600);
 	}
 	
 
