@@ -1,5 +1,4 @@
 import java.util.HashMap;
-
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.Scene;
@@ -19,7 +18,6 @@ import javafx.stage.Stage;
 
 public class JavaFXTemplate extends Application {
 	private BorderPane borderPane;
-	EventHandler<ActionEvent> moveButton, moveBottom;
 	private Button b1;
 	HashMap<String, Scene> sceneMap;
 	private Button gamePlay;
@@ -29,7 +27,7 @@ public class JavaFXTemplate extends Application {
 	private HBox menuBar;
 	private HBox moveBar;
 	private GridPane board;
-	private int playerCounter;
+	int player;
 	GameButton array[][];
 	
 	public static void main(String[] args) {
@@ -68,13 +66,6 @@ public class JavaFXTemplate extends Application {
 		primaryStage.setScene(sceneMap.get("welcome"));
 		primaryStage.show();
 	}
-	public void setCounter(int i) {
-		playerCounter = i;
-	}
-	public int getCounter() {
-		return playerCounter;
-	}
-
 	public Scene gameScene() {
 		Label label = new Label("MOVE : ");
 		Label validity = new Label("No - Move");
@@ -85,7 +76,7 @@ public class JavaFXTemplate extends Application {
 		board = new GridPane();
 		board.setVgap(10);
 		board.setHgap(10);
-		setCounter(2);
+		player = 1;
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				GameButton box = new GameButton();
@@ -98,20 +89,20 @@ public class JavaFXTemplate extends Application {
 			GameButton box = array[i][j];
 			final int boxcol = j;
 			final int boxrow = i;
-			final int playCount = getCounter();
 			box.setOnAction(e -> {
 				if(array[boxrow][boxcol + 1].isDisabled())
 				{
 					box.setDisable(true);
-					if (playCount % 2 == 0) {
+					if (player == 1) {
 						box.setStyle("-fx-background-color: darkRed;");
+						player = 2;
 					} else {
-						box.setStyle("-fx-background-color: darkYellow;");
+						box.setStyle("-fx-background-color: darkBlue;");
+						player = 1;
 					}
-					validity.setText("On [" + boxcol + "] [" + boxrow + "]");
-					setCounter(playCount + 1);
+					validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
 				} else {
-					validity.setText("Invalid Move");
+					validity.setText("For Player : " + player +" Invalid Move");
 				}
 				});
 		}
@@ -120,19 +111,20 @@ public class JavaFXTemplate extends Application {
 			GameButton box = array[i][5];
 			final int boxcol = i;
 			final int boxrow = 5;
-			final int playCount = getCounter();
 			box.setOnAction(e -> {
-				if (playCount % 2 == 0) {
-					box.setStyle("-fx-color: darkRed;");
+				if (player == 1) {
+					box.setStyle("-fx-background-color: darkRed;");
+					player = 2;
 				} else {
-					box.setStyle("-fx-color: darkYellow;");
+					box.setStyle("-fx-background-color: darkBlue;");
+					player = 1;
 				}
+
 				box.setDisable(true);
-				validity.setText("On [" + boxcol + "] [" + boxrow + "]");
-				setCounter(playCount + 1);
+				validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
 				});
 		}
-		moveBar = new HBox(50, label, validity);
+		moveBar = new HBox(10, label, validity);
 		
 		
 //		_________________________________________________________________________________________________________________________
