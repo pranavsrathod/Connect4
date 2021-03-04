@@ -85,7 +85,7 @@ public class JavaFXTemplate extends Application {
 		board = new GridPane();
 		board.setVgap(10);
 		board.setHgap(10);
-		setCounter(0);
+		setCounter(2);
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				GameButton box = new GameButton();
@@ -104,9 +104,9 @@ public class JavaFXTemplate extends Application {
 				{
 					box.setDisable(true);
 					if (playCount % 2 == 0) {
-						box.setStyle("-fx-background-color: lightRed;");
+						box.setStyle("-fx-background-color: darkRed;");
 					} else {
-						box.setStyle("-fx-background-color: lightPink;");
+						box.setStyle("-fx-background-color: darkYellow;");
 					}
 					validity.setText("On [" + boxcol + "] [" + boxrow + "]");
 					setCounter(playCount + 1);
@@ -122,12 +122,12 @@ public class JavaFXTemplate extends Application {
 			final int boxrow = 5;
 			final int playCount = getCounter();
 			box.setOnAction(e -> {
-				box.setDisable(true);
 				if (playCount % 2 == 0) {
-					box.setStyle("-fx-color: lightRed;");
+					box.setStyle("-fx-color: darkRed;");
 				} else {
-					box.setStyle("-fx-color: lightPink;");
+					box.setStyle("-fx-color: darkYellow;");
 				}
+				box.setDisable(true);
 				validity.setText("On [" + boxcol + "] [" + boxrow + "]");
 				setCounter(playCount + 1);
 				});
