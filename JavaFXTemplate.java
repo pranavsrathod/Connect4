@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Stack;
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.event.ActionEvent;
@@ -17,16 +19,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-public class JavaFXTemplate extends Application {	private BorderPane borderPane;
+public class JavaFXTemplate extends Application {	
+	private BorderPane borderPane;
 	EventHandler<ActionEvent> moveButton, moveBottom;
 	private Button b1;
 	HashMap<String, Scene> sceneMap;
-//	private Button gamePlay;
-//	private Button theme;
-//	private Button options;
-//	private HBox menuBar;
 	private MenuBar menu;
 	private Menu gamePlay;
 	private MenuItem reverse;
@@ -37,6 +38,7 @@ public class JavaFXTemplate extends Application {	private BorderPane borderPane;
 	private MenuItem exit;
 	private MenuItem howToPlay;
 	private MenuItem newGame;
+	private Stack<GameButton> stack_Buttons;
 	private HBox moveBar;
 	private VBox root;
 	private GridPane board;
@@ -80,16 +82,18 @@ public class JavaFXTemplate extends Application {	private BorderPane borderPane;
 		primaryStage.show();
 	}
 	public Scene gameScene() {
+		
+		stack_Buttons = new Stack<GameButton> ();
 		Label label = new Label("MOVE : ");
 		Label validity = new Label("No - Move");
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		//gamePlay.setPrefWidth(50);
 		array = new GameButton[7][6];
 		board = new GridPane();
 		board.setVgap(10);
 		board.setHgap(10);
 		player = 1;
+		// for building the grid
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				GameButton box = new GameButton();
@@ -97,61 +101,55 @@ public class JavaFXTemplate extends Application {	private BorderPane borderPane;
 				array[i][j] = box;
 			}
 		}
+		
+		// for any moves above the last row
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 5; j++) {
-			GameButton box = array[i][j];
-			final int boxcol = j;
-			final int boxrow = i;
-			box.setOnAction(e -> {
-				if(array[boxrow][boxcol + 1].isDisabled())
-				{
-					box.setDisable(true);
-					if (player == 1) {
-						box.setStyle("-fx-background-color: darkRed;");
-						player = 2;
+				GameButton box = array[i][j];
+				final int boxcol = j;
+				final int boxrow = i;
+				box.setOnAction(e -> {
+					if(array[boxrow][boxcol + 1].isDisabled()) {	
+						box.setDisable(true);
+						if (player == 1) {
+							stack_Buttons.push(box);
+							box.setStyle("-fx-background-color: darkRed;");
+							player = 2;
+						} else {
+							stack_Buttons.push(box);
+							box.setStyle("-fx-background-color: darkBlue;");
+							player = 1;
+						}
+						validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
 					} else {
-						box.setStyle("-fx-background-color: darkBlue;");
-						player = 1;
+						validity.setText("For Player : " + player +" Invalid Move");
 					}
-					validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
-				} else {
-					validity.setText("For Player : " + player +" Invalid Move");
-				}
 				});
+			}
 		}
-		}
+//		 Only valid Moves
 		for (int i = 0; i < 7; i++) {
 			GameButton box = array[i][5];
 			final int boxcol = i;
 			final int boxrow = 5;
 			box.setOnAction(e -> {
 				if (player == 1) {
+					stack_Buttons.push(box);
 					box.setStyle("-fx-background-color: darkRed;");
 					player = 2;
 				} else {
+					stack_Buttons.push(box);
 					box.setStyle("-fx-background-color: darkBlue;");
 					player = 1;
 				}
 
 				box.setDisable(true);
 				validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
-				});
+			});
 		}
-		moveBar = new HBox(10, label, validity);
-		
-		
-//		_________________________________________________________________________________________________________________________
-// 		gamePlay = new Button("Game Play");
-// 		gamePlay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-		
-// 		theme = new Button("Theme");
-// 		theme.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-// 		//theme.setPrefWidth(50);
-		
-// 		options = new Button("Options");
-// 		options.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-// 		//options.setPrefWidth(50);
-// 		menuBar = new HBox(150, gamePlay, theme, options);
+		moveBar = new HBox(10, label, validity);	
+
+		// Menu Bar
 		menu = new MenuBar();
 		gamePlay = new Menu("gamePlay");
 		theme = new Menu("theme");
@@ -166,12 +164,36 @@ public class JavaFXTemplate extends Application {	private BorderPane borderPane;
 		theme.getItems().addAll(theme1, theme2);
 		options.getItems().addAll(howToPlay, newGame, exit);
 		menu.getMenus().addAll(gamePlay, theme, options);
+		
+		// action event for reverse
+		reverse.setOnAction(e -> {
+			int storeRow = 0;
+			int storeColumn = 0;
+			GameButton remove = new GameButton();
+			GameButton temp = new GameButton();
+			if (!stack_Buttons.isEmpty()) {
+				remove = stack_Buttons.pop();
+			}
+			remove.setStyle("-fx-background-color: yellow");
+			remove.setDisable(false);
+			
+			temp = stack_Buttons.peek();
+			for (int i = 0; i < 7; i++) {
+				for (int j = 0; j < 6; j++) {
+					if (array[i][j] == temp) {
+						storeRow = i;
+						storeColumn = j;
+					}
+				}
+			}
+			validity.setText("For Player : " + player +" Last Move On [" + storeColumn + "] [" + storeRow + "]");
+			
+		});
+		
+		// Border Pane execution
 		BorderPane pane = new BorderPane();
-// 		pane.setTop(menuBar);
 		pane.setCenter(board);
 		pane.setStyle("-fx-background-color: lightBlue;");
 		return new Scene(new VBox(20, menu, pane, moveBar), 600, 600);
 	}
-	
-
 }
