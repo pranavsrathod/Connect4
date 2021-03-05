@@ -87,6 +87,7 @@ public class JavaFXTemplate extends Application {
 		Label label = new Label("MOVE : ");
 		Label validity = new Label("No - Move");
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		//gamePlay.setPrefWidth(50);
 		array = new GameButton[7][6];
 		board = new GridPane();
@@ -112,14 +113,14 @@ public class JavaFXTemplate extends Application {
 					if(array[boxrow][boxcol + 1].isDisabled()) {	
 						box.setDisable(true);
 						if (player == 1) {
-							stack_Buttons.push(box);
-							box.setStyle("-fx-background-color: darkRed;");
+							// stack_Buttons.push(box);
+							box.setStyle("-fx-background-color: Red;");
 							player = 2;
 						} else {
-							stack_Buttons.push(box);
-							box.setStyle("-fx-background-color: darkBlue;");
+							box.setStyle("-fx-background-color: Yellow;");
 							player = 1;
 						}
+						stack_Buttons.push(box);
 						validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
 					} else {
 						validity.setText("For Player : " + player +" Invalid Move");
@@ -134,15 +135,14 @@ public class JavaFXTemplate extends Application {
 			final int boxrow = 5;
 			box.setOnAction(e -> {
 				if (player == 1) {
-					stack_Buttons.push(box);
-					box.setStyle("-fx-background-color: darkRed;");
+//					stack_Buttons.push(box);
+					box.setStyle("-fx-background-color: Red;");
 					player = 2;
 				} else {
-					stack_Buttons.push(box);
-					box.setStyle("-fx-background-color: darkBlue;");
+					box.setStyle("-fx-background-color: Yellow;");
 					player = 1;
 				}
-
+				stack_Buttons.push(box);
 				box.setDisable(true);
 				validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
 			});
@@ -174,9 +174,14 @@ public class JavaFXTemplate extends Application {
 			if (!stack_Buttons.isEmpty()) {
 				remove = stack_Buttons.pop();
 			}
-			remove.setStyle("-fx-background-color: yellow");
+			remove.setStyle("-fx-background-color: darkGrey");
 			remove.setDisable(false);
-			
+			if (player == 1) {
+//				stack_Buttons.push(box);
+				player = 2;
+			} else {
+				player = 1;
+			}
 			temp = stack_Buttons.peek();
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 6; j++) {
@@ -193,7 +198,7 @@ public class JavaFXTemplate extends Application {
 		// Border Pane execution
 		BorderPane pane = new BorderPane();
 		pane.setCenter(board);
-		pane.setStyle("-fx-background-color: lightBlue;");
+		pane.setStyle("-fx-background-color: Black;");
 		return new Scene(new VBox(20, menu, pane, moveBar), 600, 600);
 	}
 }
