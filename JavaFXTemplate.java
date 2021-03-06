@@ -39,6 +39,7 @@ public class JavaFXTemplate extends Application {
 	private Menu theme;
 	private MenuItem theme1;
 	private MenuItem theme2;
+	private MenuItem original_theme;
 	private Menu options;
 	private MenuItem exit;
 	private MenuItem howToPlay;
@@ -165,11 +166,12 @@ public class JavaFXTemplate extends Application {
 		reverse = new MenuItem("reverse");
 		theme1 = new MenuItem("theme1");
 		theme2 = new MenuItem("theme2");
+		original_theme = new MenuItem("original");
 		howToPlay = new MenuItem("howToPlay");
 		exit = new MenuItem("exit");
 		newGame = new MenuItem("newGame");
 		gamePlay.getItems().add(reverse);
-		theme.getItems().addAll(theme1, theme2);
+		theme.getItems().addAll(theme1, theme2, original_theme);
 		options.getItems().addAll(howToPlay, newGame, exit);
 		menu.getMenus().addAll(gamePlay, theme, options);
 		
@@ -188,7 +190,7 @@ public class JavaFXTemplate extends Application {
 			if (count == 0) {
 				validity.setText("No - Move!");
 			}
-			remove.setStyle("-fx-background-color: darkGrey");
+			remove.setStyle("-fx-background-color: #FFFFE0");
 			remove.setDisable(false);
 			if (player == 1) {
 //				stack_Buttons.push(box);
@@ -246,7 +248,11 @@ public class JavaFXTemplate extends Application {
 		});
 		
 		theme2.setOnAction(e -> {
-			pane.setStyle("-fx-background-color: #228B22;");
+			pane.setStyle("-fx-background-color: #FFD700;");
+		});
+		
+		original_theme.setOnAction(e -> {
+			pane.setStyle("-fx-background-color: #FFFFE0;");
 		});
 		pane.setCenter(board);
 		pane.setStyle("-fx-background-color: white;");
