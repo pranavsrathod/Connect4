@@ -31,6 +31,7 @@ public class Grid extends GridPane {
 				array[i][j] = box;
 			}
 		}
+		board.setStyle("-fx-background-color: Black");
 		player = 1;
 		
 	}
@@ -82,39 +83,48 @@ public class Grid extends GridPane {
 		}
 	}
 	public void reverse() {
+		int count = 0;
 		int storeRow = 0;
 		int storeColumn = 0;
 		GameButton remove = new GameButton();
 		GameButton temp = new GameButton();
-		if (stack_Buttons.isEmpty()) {
-			player = 1;
-			validity.setText("No Move Yet");
-		} else {
+		count = stack_Buttons.size();
+		if (!stack_Buttons.isEmpty()) {
 			remove = stack_Buttons.pop();
-			remove.setStyle("-fx-background-color: Grey");
-			remove.setDisable(false);
-			if (player == 1) {
-//				stack_Buttons.push(box);
-				player = 2;
-			} else {
-				player = 1;
-			}
-			temp = stack_Buttons.peek();
-			for (int i = 0; i < 7; i++) {
-				for (int j = 0; j < 6; j++) {
-					if (array[i][j] == temp) {
-						storeRow = i;
-						storeColumn = j;
-					}
+			count --;
+		}
+		if (count == 0) {
+			validity.setText("No - Move!");
+		}
+		remove.setStyle("-fx-background-color: #FFFFE0");
+		remove.setDisable(false);
+		if (player == 1) {
+//			stack_Buttons.push(box);
+			player = 2;
+		} else {
+			player = 1;
+		}
+		temp = stack_Buttons.peek();
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 6; j++) {
+				if (array[i][j] == temp) {
+					storeRow = i;
+					storeColumn = j;
 				}
 			}
-			if (stack_Buttons.isEmpty()) {
-				validity.setText("No Move Yetttttt");
-			} else {
-				validity.setText("For Player : " + player +" Last Move BITCH [" + storeColumn + "] [" + storeRow + "]");
-			}
-			
 		}
+		validity.setText("For Player : " + player +" Last Move On [" + storeColumn + "] [" + storeRow + "]");
+	}
+	public void newGame() {
+		GameButton remove;
+		while (!stack_Buttons.isEmpty()) {
+			remove = stack_Buttons.pop();
+			remove.setStyle("-fx-background-color: #FFFFE0");
+			remove.setDisable(false);
+		}
+		validity.setText("No - Move!");
+		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		player = 1;
 	}
 	public Label getValidity() {
 		return validity;
