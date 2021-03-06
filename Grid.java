@@ -7,18 +7,13 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 public class Grid extends GridPane {
 	private Stack<GameButton> stack_Buttons;
-//	private HBox moveBar;
-//	private VBox root;
 	Label validity;
 	private GridPane board;
 	private int player;
 	private GameButton array[][];
 	Grid(){
 		super();
-		
-	}
-	public GridPane getBoard() {
-		// for any moves above the last row
+		stack_Buttons = new Stack<GameButton> ();
 		validity = new Label("No - Move");
 		//label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
@@ -37,6 +32,11 @@ public class Grid extends GridPane {
 			}
 		}
 		player = 1;
+		
+	}
+	public  void setButtonConfigurations() {
+		// for any moves above the last row
+		
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 5; j++) {
 				GameButton box = array[i][j];
@@ -80,39 +80,47 @@ public class Grid extends GridPane {
 				validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
 			});
 		}
-		return board;
 	}
 	public void reverse() {
 		int storeRow = 0;
 		int storeColumn = 0;
 		GameButton remove = new GameButton();
 		GameButton temp = new GameButton();
-		if (!stack_Buttons.isEmpty()) {
-			remove = stack_Buttons.pop();
-		}
-		remove.setStyle("-fx-background-color: darkGrey");
-		remove.setDisable(false);
-		if (player == 1) {
-//			stack_Buttons.push(box);
-			player = 2;
-		} else {
+		if (stack_Buttons.isEmpty()) {
 			player = 1;
-		}
-		temp = stack_Buttons.peek();
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 6; j++) {
-				if (array[i][j] == temp) {
-					storeRow = i;
-					storeColumn = j;
+			validity.setText("No Move Yet");
+		} else {
+			remove = stack_Buttons.pop();
+			remove.setStyle("-fx-background-color: Grey");
+			remove.setDisable(false);
+			if (player == 1) {
+//				stack_Buttons.push(box);
+				player = 2;
+			} else {
+				player = 1;
+			}
+			temp = stack_Buttons.peek();
+			for (int i = 0; i < 7; i++) {
+				for (int j = 0; j < 6; j++) {
+					if (array[i][j] == temp) {
+						storeRow = i;
+						storeColumn = j;
+					}
 				}
 			}
+			if (stack_Buttons.isEmpty()) {
+				validity.setText("No Move Yetttttt");
+			} else {
+				validity.setText("For Player : " + player +" Last Move BITCH [" + storeColumn + "] [" + storeRow + "]");
+			}
+			
 		}
-		validity.setText("For Player : " + player +" Last Move On [" + storeColumn + "] [" + storeRow + "]");
 	}
 	public Label getValidity() {
 		return validity;
 	}
-//	public GridPane getBoard() {
-//		return board;
-//	}
+	public GridPane getBoard() {
+		return board;
+	}
 }
+
