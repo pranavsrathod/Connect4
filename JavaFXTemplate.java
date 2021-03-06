@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Stack;
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
@@ -7,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture; 
 import javafx.scene.text.FontWeight;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
@@ -21,6 +23,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
 
 public class JavaFXTemplate extends Application {	
@@ -44,6 +49,9 @@ public class JavaFXTemplate extends Application {
 	private GridPane board;
 	private int player;
 	GameButton array[][];
+	static final int picHeight = 100;
+	static final int picWidth = 100;
+	int flag = 0;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -167,12 +175,18 @@ public class JavaFXTemplate extends Application {
 		
 		// action event for reverse
 		reverse.setOnAction(e -> {
+			int count = 0;
 			int storeRow = 0;
 			int storeColumn = 0;
 			GameButton remove = new GameButton();
 			GameButton temp = new GameButton();
+			count = stack_Buttons.size();
 			if (!stack_Buttons.isEmpty()) {
 				remove = stack_Buttons.pop();
+				count --;
+			}
+			if (count == 0) {
+				validity.setText("No - Move!");
 			}
 			remove.setStyle("-fx-background-color: darkGrey");
 			remove.setDisable(false);
@@ -195,10 +209,47 @@ public class JavaFXTemplate extends Application {
 			
 		});
 		
+		// called when newGame is clicked
+		howToPlay.setOnAction(e -> {
+		      Dialog<String> dialog = new Dialog<String>();
+		      dialog.setTitle("How To Play");
+		      ButtonType type = new ButtonType("Ok", ButtonData.OK_DONE);
+		      dialog.setContentText("This game is called Connect 4\n"
+		      		+ "It involves connecting four tiles\n"
+		    		+ "These tiles can be connected either Horizontally, Vertically and Diagnolly\n");
+		      dialog.getDialogPane().getButtonTypes().add(type);
+		      dialog.showAndWait();
+		});
+		
+		newGame.setOnAction(e -> {
+			int storeRow = 0;
+			int storeColumn = 0;
+			GameButton remove = new GameButton();
+			GameButton temp = new GameButton();
+			while (!stack_Buttons.isEmpty()) {
+				remove = stack_Buttons.pop();
+				remove.setStyle("-fx-background-color: darkGrey");
+				remove.setDisable(false);
+			}
+			validity.setText("No - Move!");
+			validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		});
+		
+		exit.setOnAction(e-> {
+		    	System.exit(0);
+		});
+		
 		// Border Pane execution
 		BorderPane pane = new BorderPane();
+		theme1.setOnAction(e -> {
+			pane.setStyle("-fx-background-color: DeepSkyBlue;");
+		});
+		
+		theme2.setOnAction(e -> {
+			pane.setStyle("-fx-background-color: #228B22;");
+		});
 		pane.setCenter(board);
-		pane.setStyle("-fx-background-color: Black;");
+		pane.setStyle("-fx-background-color: white;");
 		return new Scene(new VBox(20, menu, pane, moveBar), 600, 600);
 	}
 }
