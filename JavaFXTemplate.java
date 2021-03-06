@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Stack;
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
@@ -7,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture; 
 import javafx.scene.text.FontWeight;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
@@ -21,6 +23,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
 
 public class JavaFXTemplate extends Application {	
@@ -38,6 +43,7 @@ public class JavaFXTemplate extends Application {
 	private MenuItem exit;
 	private MenuItem howToPlay;
 	private MenuItem newGame;
+	private MenuItem original_theme;
 //	private Stack<GameButton> stack_Buttons;
 	private HBox moveBar;
 	Grid object;
@@ -69,8 +75,6 @@ public class JavaFXTemplate extends Application {
 		 add an image to the background
 		 */
 		borderPane = new BorderPane();
-//		borderPane.setCenter(label);
-//		borderPane.setCenter(b1);
 		borderPane.setCenter(root);
 		b1.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
 		Scene welcome = new Scene(borderPane, 500,500);
@@ -98,11 +102,12 @@ public class JavaFXTemplate extends Application {
 		reverse = new MenuItem("reverse");
 		theme1 = new MenuItem("theme1");
 		theme2 = new MenuItem("theme2");
+		original_theme = new MenuItem("original");
 		howToPlay = new MenuItem("howToPlay");
 		exit = new MenuItem("exit");
 		newGame = new MenuItem("newGame");
 		gamePlay.getItems().add(reverse);
-		theme.getItems().addAll(theme1, theme2);
+		theme.getItems().addAll(theme1, theme2, original_theme);
 		options.getItems().addAll(howToPlay, newGame, exit);
 		menu.getMenus().addAll(gamePlay, theme, options);
 		
@@ -110,9 +115,35 @@ public class JavaFXTemplate extends Application {
 		reverse.setOnAction(e -> object.reverse());
 		moveBar = new HBox(10, label, object.getValidity());	
 		// Border Pane execution
+		howToPlay.setOnAction(e -> {
+		      Dialog<String> dialog = new Dialog<String>();
+		      dialog.setTitle("How To Play");
+		      ButtonType type = new ButtonType("Ok", ButtonData.OK_DONE);
+		      dialog.setContentText("This game is called Connect 4\n"
+		      		+ "It involves connecting four tiles\n"
+		    		+ "These tiles can be connected either Horizontally, Vertically and Diagnolly\n");
+		      dialog.getDialogPane().getButtonTypes().add(type);
+		      dialog.showAndWait();
+		});
+		
+		newGame.setOnAction(e -> object.newGame());
+		exit.setOnAction(e-> {
+	    	System.exit(0);
+		});
+		
+		// Border Pane execution
 		BorderPane pane = new BorderPane();
+		theme1.setOnAction(e -> {
+			board.setStyle("-fx-background-color: DeepSkyBlue;");
+		});
+		
+		theme2.setOnAction(e -> {
+			board.setStyle("-fx-background-color: #228B22;");
+		});
+		original_theme.setOnAction(e -> {
+			board.setStyle("-fx-background-color: Black;");
+		});
 		pane.setCenter(board);
-		pane.setStyle("-fx-background-color: Black;");
 		return new Scene(new VBox(20, menu, board, moveBar), 600, 600);
 		//return new Scene(object, 600, 600);
 	}
