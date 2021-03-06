@@ -84,73 +84,11 @@ public class JavaFXTemplate extends Application {
 	}
 	public Scene gameScene() {
 		object = new Grid();
-		//object.setButtonConfigurations();
+		object.setButtonConfigurations();
 		board = object.getBoard();
-//		stack_Buttons = new Stack<GameButton> ();
 		Label label = new Label("MOVE : ");
-//		Label validity = new Label("No - Move");
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-//		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-//		//gamePlay.setPrefWidth(50);
-//		array = new GameButton[7][6];
-//		board = new GridPane();
-//		board.setVgap(10);
-//		board.setHgap(10);
-//		player = 1;
-//		// for building the grid
-//		for (int i = 0; i < 7; i++) {
-//			for (int j = 0; j < 6; j++) {
-//				GameButton box = new GameButton();
-//				board.add(box, i, j);
-//				array[i][j] = box;
-//			}
-//		}
-//		
-//		// for any moves above the last row
-//		for (int i = 0; i < 7; i++) {
-//			for (int j = 0; j < 5; j++) {
-//				GameButton box = array[i][j];
-//				final int boxcol = j;
-//				final int boxrow = i;
-//				box.setOnAction(e -> {
-//					if(array[boxrow][boxcol + 1].isDisabled()) {	
-//						box.setDisable(true);
-//						if (player == 1) {
-//							// stack_Buttons.push(box);
-//							box.setStyle("-fx-background-color: Red;");
-//							player = 2;
-//						} else {
-//							box.setStyle("-fx-background-color: Yellow;");
-//							player = 1;
-//						}
-//						stack_Buttons.push(box);
-//						validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
-//					} else {
-//						validity.setText("For Player : " + player +" Invalid Move");
-//					}
-//				});
-//			}
-//		}
-////		 Only valid Moves
-//		for (int i = 0; i < 7; i++) {
-//			GameButton box = array[i][5];
-//			final int boxcol = i;
-//			final int boxrow = 5;
-//			box.setOnAction(e -> {
-//				if (player == 1) {
-////					stack_Buttons.push(box);
-//					box.setStyle("-fx-background-color: Red;");
-//					player = 2;
-//				} else {
-//					box.setStyle("-fx-background-color: Yellow;");
-//					player = 1;
-//				}
-//				stack_Buttons.push(box);
-//				box.setDisable(true);
-//				validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
-//			});
-//		}
-		moveBar = new HBox(10, label, object.getValidity());	
+		
 
 		// Menu Bar
 		menu = new MenuBar();
@@ -170,7 +108,7 @@ public class JavaFXTemplate extends Application {
 		
 		// action event for reverse
 		reverse.setOnAction(e -> object.reverse());
-		
+		moveBar = new HBox(10, label, object.getValidity());	
 		// Border Pane execution
 		BorderPane pane = new BorderPane();
 		pane.setCenter(board);
