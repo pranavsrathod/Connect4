@@ -15,7 +15,6 @@ public class Grid extends GridPane {
 	private GameButton array[][];
 	private boolean isWin;
 	private String defaultStyle;
-	private GameButton track;
 	Grid(){
 		super();
 		stack_Buttons = new Stack<GameButton> ();
@@ -32,7 +31,7 @@ public class Grid extends GridPane {
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				String s = i+","+j;
-				GameButton box = new GameButton();
+				GameButton box = new GameButton(s);
 				board.add(box, i, j);
 				array[i][j] = box;
 			}
@@ -75,11 +74,9 @@ public class Grid extends GridPane {
 	}
 	private void Configure(GameButton box, int boxrow, int boxcol) {
 		countTile++;
-		track = new GameButton();
 		if (player == 1) {
 			// stack_Buttons.push(box);
 			buttonColor = "-fx-background-color: Red;";
-			track.color = "red";
 			box.setStyle(buttonColor);
 			if (countTile >= 7) {
 				checkWin(boxrow, boxcol);
@@ -87,7 +84,6 @@ public class Grid extends GridPane {
 			player = 2;
 		} else {
 			buttonColor = "-fx-background-color: Yellow;";
-			track.color = "yellow";
 			box.setStyle(buttonColor);
 			if (countTile >= 7) {
 				checkWin(boxrow, boxcol);
@@ -135,20 +131,19 @@ public class Grid extends GridPane {
 		}
 		
 	}
-	public void checkWin(int row, int col) {
+	private void checkWin(int row, int col) {
 		isWin = checkRow(col);
 		if (!isWin) {
 			isWin = checkCol(row);
-			if (!isWin) {
-				checkDiagnol(col, row);
+			if(!isWin) {
+				isWin = checkDiagonal();
 			}
 		}
 	}
-	public boolean checkRow(int row) {
+	private boolean checkRow(int row) {
 		int counter = 0;
 		for (int i = 0; i < 4; i++) {
 			String style = array[i][row].getStyle();
-			// array[i][row].setText(row+","+i);
 			if (!(style.equals(defaultStyle))) {
 				for (int j = i + 1; j<= i+3; j++) {
 					String style2 = array[j][row].getStyle();
@@ -167,7 +162,7 @@ public class Grid extends GridPane {
 		}
 		return false;
 	}
-	public boolean checkCol(int col) {
+	private boolean checkCol(int col) {
 		int counter = 0;
 		for (int i = 0; i < 3; i++) {
 			String style = array[col][i].getStyle();
@@ -187,23 +182,66 @@ public class Grid extends GridPane {
 		}
 		return false;
 	}
-	public boolean checkDiagnol(int col, int row) {
-		int counter = 0;
-		for (int i = 0; i < 4 ; i++) {
-			for (int j = 0; j < 3 ; j++) {
-				if (array[i][j].color == "red" && array[i+1][j+1].color == "red" && array[i+2][j+2].color == "red" && array[i+3][j+3].color == "red") {
-					counter = 1;
-				} else if (array[i][j].color == "yellow" && array[i+1][j+1].color == "yellow" && array[i+2][j+2].color == "yellow" && array[i+3][j+3].color == "yellow") {
-					counter = 2;
-				} else {
-					counter = 0;
+	
+	
+	private boolean checkDiagonal() {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (checkLeft(i,j)) {
+					return true;
 				}
-				
 			}
 		}
-		if (counter == 1 || counter == 2) {
-			validity.setText("PLAYER " + player + " WON DIAGONAL!!!!");
-			return true;
+		for (int i = 6; i > 2; i--) {
+			for (int j = 0; j < 3; j++) {
+				if (checkRight(i,j)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	private boolean checkLeft(int i, int j) {
+		int counter = 0;
+		while ((i+3) < 7 && (j+3) < 6) {
+			String style = array[i][j].getStyle();
+			if (!(style.equals(defaultStyle))) {
+				for (int k = i+1, l = j+1; k <= i+3 && l <= j+3; k++, l++) {
+					if(style.equals(array[k][l].getStyle())){
+						counter++;
+					} else {
+						counter = 0;
+					}
+				}
+			}
+			if (counter == 3) {
+				validity.setText("PLAYER " + player + " WON LEFT DIAGONAL!!!!");
+				return true;
+			}
+			i++;
+			j++;
+		}
+		return false;
+	}
+	private boolean checkRight(int i, int j) {
+		int counter = 0;
+		while ((i-3) > -1 && (j+3) < 6) {
+			String style = array[i][j].getStyle();
+			if (!(style.equals(defaultStyle))) {
+				for (int k = i-1, l = j+1; k >= i-3 && l <= j+3; k--, l++) {
+					if(style.equals(array[k][l].getStyle())){
+						counter++;
+					} else {
+						counter = 0;
+					}
+				}
+			}
+			if (counter == 3) {
+				validity.setText("PLAYER " + player + " WON RIGHT DIAGONAL!!!!");
+				return true;
+			}
+			i--;
+			j++;
 		}
 		return false;
 	}
@@ -217,6 +255,9 @@ public class Grid extends GridPane {
 		validity.setText("No - Move!");
 		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		player = 1;
+	}
+	public boolean getWin() {
+		return isWin;
 	}
 	
 	public Label getValidity() {
