@@ -15,6 +15,7 @@ public class Grid extends GridPane {
 	private GameButton array[][];
 	private boolean isWin;
 	private String defaultStyle;
+	private GameButton track;
 	Grid(){
 		super();
 		stack_Buttons = new Stack<GameButton> ();
@@ -31,7 +32,7 @@ public class Grid extends GridPane {
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				String s = i+","+j;
-				GameButton box = new GameButton(s);
+				GameButton box = new GameButton();
 				board.add(box, i, j);
 				array[i][j] = box;
 			}
@@ -74,9 +75,11 @@ public class Grid extends GridPane {
 	}
 	private void Configure(GameButton box, int boxrow, int boxcol) {
 		countTile++;
+		track = new GameButton();
 		if (player == 1) {
 			// stack_Buttons.push(box);
 			buttonColor = "-fx-background-color: Red;";
+			track.color = "red";
 			box.setStyle(buttonColor);
 			if (countTile >= 7) {
 				checkWin(boxrow, boxcol);
@@ -84,6 +87,7 @@ public class Grid extends GridPane {
 			player = 2;
 		} else {
 			buttonColor = "-fx-background-color: Yellow;";
+			track.color = "yellow";
 			box.setStyle(buttonColor);
 			if (countTile >= 7) {
 				checkWin(boxrow, boxcol);
@@ -135,6 +139,9 @@ public class Grid extends GridPane {
 		isWin = checkRow(col);
 		if (!isWin) {
 			isWin = checkCol(row);
+			if (!isWin) {
+				checkDiagnol(col, row);
+			}
 		}
 	}
 	public boolean checkRow(int row) {
@@ -180,6 +187,26 @@ public class Grid extends GridPane {
 		}
 		return false;
 	}
+	public boolean checkDiagnol(int col, int row) {
+		int counter = 0;
+		for (int i = 0; i < 4 ; i++) {
+			for (int j = 0; j < 3 ; j++) {
+				if (array[i][j].color == "red" && array[i+1][j+1].color == "red" && array[i+2][j+2].color == "red" && array[i+3][j+3].color == "red") {
+					counter = 1;
+				} else if (array[i][j].color == "yellow" && array[i+1][j+1].color == "yellow" && array[i+2][j+2].color == "yellow" && array[i+3][j+3].color == "yellow") {
+					counter = 2;
+				} else {
+					counter = 0;
+				}
+				
+			}
+		}
+		if (counter == 1 || counter == 2) {
+			validity.setText("PLAYER " + player + " WON DIAGONAL!!!!");
+			return true;
+		}
+		return false;
+	}
 	public void newGame() {
 		GameButton remove;
 		while (!stack_Buttons.isEmpty()) {
@@ -199,4 +226,3 @@ public class Grid extends GridPane {
 		return board;
 	}
 }
-
