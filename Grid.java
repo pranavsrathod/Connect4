@@ -109,7 +109,7 @@ public class Grid extends GridPane {
 		count = stack_Buttons.size();
 		if (!stack_Buttons.isEmpty()) {
 			remove = stack_Buttons.pop();
-			remove.setStyle("-fx-background-color: #FFFFE0");
+			remove.setStyle("-fx-background-color: Black");
 			remove.setDisable(false);
 			if (player == 1) {
 //				stack_Buttons.push(box);
@@ -156,7 +156,7 @@ public class Grid extends GridPane {
 		for (int i =0; i < winBoxes.size(); i++) {
 			winBoxes.elementAt(i).setStyle("-fx-background-color: Green");;
 		}
-		
+		winBoxes.clear();
 	}
 	private boolean checkRow(int row) {
 		int counter = 0;
@@ -283,7 +283,7 @@ public class Grid extends GridPane {
 		GameButton remove;
 		while (!stack_Buttons.isEmpty()) {
 			remove = stack_Buttons.pop();
-			remove.setStyle("-fx-background-color: #FFFFE0");
+			remove.setStyle("-fx-background-color: Black");
 			remove.setDisable(false);
 		}
 		validity.setText("No - Move!");
