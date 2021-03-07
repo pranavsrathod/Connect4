@@ -10,7 +10,11 @@ public class Grid extends GridPane {
 	Label validity;
 	private GridPane board;
 	private int player;
+	private int countTile;
+	private String buttonColor;
 	private GameButton array[][];
+	private boolean isWin;
+	private String defaultStyle;
 	Grid(){
 		super();
 		stack_Buttons = new Stack<GameButton> ();
@@ -26,14 +30,18 @@ public class Grid extends GridPane {
 		// for building the grid
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
-				GameButton box = new GameButton();
+				String s = i+","+j;
+				GameButton box = new GameButton(s);
 				board.add(box, i, j);
 				array[i][j] = box;
 			}
 		}
 		board.setStyle("-fx-background-color: Black");
 		player = 1;
-		
+		countTile = 0;
+		isWin = false;
+		buttonColor = "-fx-background-color: Black";
+		defaultStyle = "-fx-background-color: #FFFFE0";
 	}
 	public  void setButtonConfigurations() {
 		// for any moves above the last row
@@ -45,19 +53,10 @@ public class Grid extends GridPane {
 				final int boxrow = i;
 				box.setOnAction(e -> {
 					if(array[boxrow][boxcol + 1].isDisabled()) {	
-						box.setDisable(true);
-						if (player == 1) {
-							// stack_Buttons.push(box);
-							box.setStyle("-fx-background-color: Red;");
-							player = 2;
-						} else {
-							box.setStyle("-fx-background-color: Yellow;");
-							player = 1;
-						}
-						stack_Buttons.push(box);
-						validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
+						Configure(box,boxrow,boxcol);
+						// validity.setText("For Player : " + player +" Last Move On [" + boxrow + "] [" + boxcol + "]");
 					} else {
-						validity.setText("For Player : " + player +" Invalid Move");
+						validity.setText("Player : " + player +" Invalid Move");
 					}
 				});
 			}
@@ -65,55 +64,121 @@ public class Grid extends GridPane {
 //				 Only valid Moves
 		for (int i = 0; i < 7; i++) {
 			GameButton box = array[i][5];
-			final int boxcol = i;
-			final int boxrow = 5;
+			final int boxcol = 5;
+			final int boxrow = i;
 			box.setOnAction(e -> {
-				if (player == 1) {
-//							stack_Buttons.push(box);
-					box.setStyle("-fx-background-color: Red;");
-					player = 2;
-				} else {
-					box.setStyle("-fx-background-color: Yellow;");
-					player = 1;
-				}
-				stack_Buttons.push(box);
-				box.setDisable(true);
-				validity.setText("For Player : " + player +" Last Move On [" + boxcol + "] [" + boxrow + "]");
+				Configure(box,boxrow,boxcol);
+				// validity.setText("For Player : " + player +" Last Move On [" + boxrow + "] [" + boxcol + "]");
 			});
 		}
+	}
+	private void Configure(GameButton box, int boxrow, int boxcol) {
+		countTile++;
+		if (player == 1) {
+			// stack_Buttons.push(box);
+			buttonColor = "-fx-background-color: Red;";
+			box.setStyle(buttonColor);
+			if (countTile >= 7) {
+				checkWin(boxrow, boxcol);
+			}
+			player = 2;
+		} else {
+			buttonColor = "-fx-background-color: Yellow;";
+			box.setStyle(buttonColor);
+			if (countTile >= 7) {
+				checkWin(boxrow, boxcol);
+			}
+//			box.setStyle("-fx-background-color: Yellow;");
+			player = 1;
+		}
+		if(!isWin) {
+			validity.setText(" Last Move On [" + boxrow + "] [" + boxcol + "] Next Move For Player : " + player);
+		}
+		stack_Buttons.push(box);
+		box.setDisable(true);
 	}
 	public void reverse() {
 		int count = 0;
 		int storeRow = 0;
 		int storeColumn = 0;
-		GameButton remove = new GameButton();
-		GameButton temp = new GameButton();
+		GameButton remove;
+		GameButton temp;
 		count = stack_Buttons.size();
 		if (!stack_Buttons.isEmpty()) {
 			remove = stack_Buttons.pop();
+			remove.setStyle("-fx-background-color: #FFFFE0");
+			remove.setDisable(false);
+			if (player == 1) {
+//				stack_Buttons.push(box);
+				player = 2;
+			} else {
+				player = 1;
+			}
+			temp = stack_Buttons.peek();
+			for (int i = 0; i < 7; i++) {
+				for (int j = 0; j < 6; j++) {
+					if (array[i][j] == temp) {
+						storeRow = i;
+						storeColumn = j;
+					}
+				}
+			}
+			validity.setText("For Player : " + player +" Last Move On [" + storeColumn + "] [" + storeRow + "]");
 			count --;
 		}
 		if (count == 0) {
 			validity.setText("No - Move!");
 		}
-		remove.setStyle("-fx-background-color: #FFFFE0");
-		remove.setDisable(false);
-		if (player == 1) {
-//			stack_Buttons.push(box);
-			player = 2;
-		} else {
-			player = 1;
+		
+	}
+	public void checkWin(int row, int col) {
+		isWin = checkRow(col);
+		if (!isWin) {
+			isWin = checkCol(row);
 		}
-		temp = stack_Buttons.peek();
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 6; j++) {
-				if (array[i][j] == temp) {
-					storeRow = i;
-					storeColumn = j;
+	}
+	public boolean checkRow(int row) {
+		int counter = 0;
+		for (int i = 0; i < 4; i++) {
+			String style = array[i][row].getStyle();
+			// array[i][row].setText(row+","+i);
+			if (!(style.equals(defaultStyle))) {
+				for (int j = i + 1; j<= i+3; j++) {
+					String style2 = array[j][row].getStyle();
+					if(style.equals(style2)){
+						// array[j][row].setText(row+","+j);
+						counter++;
+					} else {
+						counter = 0;
+					}
 				}
 			}
+			if (counter == 3) {
+				validity.setText("PLAYER " + player + " WON ROW!!!!");
+				return true;
+			}
 		}
-		validity.setText("For Player : " + player +" Last Move On [" + storeColumn + "] [" + storeRow + "]");
+		return false;
+	}
+	public boolean checkCol(int col) {
+		int counter = 0;
+		for (int i = 0; i < 3; i++) {
+			String style = array[col][i].getStyle();
+			if (!(style.equals(defaultStyle))) {
+				for (int j = i+1; j<= i+3; j++) {
+					if(style.equals(array[col][j].getStyle())){
+						counter++;
+					} else {
+						counter = 0;
+					}
+				}
+			}
+			if (counter == 3) {
+				validity.setText("PLAYER " + player + " WON COLUMN!!!!");
+				return true;
+			}
+		}
+		return false;
 	}
 	public void newGame() {
 		GameButton remove;
@@ -126,6 +191,7 @@ public class Grid extends GridPane {
 		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		player = 1;
 	}
+	
 	public Label getValidity() {
 		return validity;
 	}
