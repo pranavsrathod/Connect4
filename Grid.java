@@ -1,4 +1,5 @@
 import java.util.Stack;
+import java.util.Vector;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -15,9 +16,11 @@ public class Grid extends GridPane {
 	private GameButton array[][];
 	private boolean isWin;
 	private String defaultStyle;
+	private Vector<GameButton> winBoxes;
 	Grid(){
 		super();
 		stack_Buttons = new Stack<GameButton> ();
+		winBoxes = new Vector<GameButton>();
 		validity = new Label("No - Move");
 		//label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
@@ -36,12 +39,12 @@ public class Grid extends GridPane {
 				array[i][j] = box;
 			}
 		}
-		board.setStyle("-fx-background-color: Black");
+		board.setStyle("-fx-background-color: White");
 		player = 1;
 		countTile = 0;
 		isWin = false;
 		buttonColor = "-fx-background-color: Black";
-		defaultStyle = "-fx-background-color: #FFFFE0";
+		defaultStyle = "-fx-background-color: Black";
 	}
 	public  void setButtonConfigurations() {
 		// for any moves above the last row
@@ -139,18 +142,36 @@ public class Grid extends GridPane {
 				isWin = checkDiagonal();
 			}
 		}
+		if (isWin) {
+			displayWin();
+		}
+	}
+	private void displayWin() {
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 6; j++) {
+				array[i][j].setDisable(true);
+				array[i][j].setStyle("-fx-background-color: #FFFFE0");
+			}
+		}
+		for (int i =0; i < winBoxes.size(); i++) {
+			winBoxes.elementAt(i).setStyle("-fx-background-color: Green");;
+		}
+		
 	}
 	private boolean checkRow(int row) {
 		int counter = 0;
 		for (int i = 0; i < 4; i++) {
 			String style = array[i][row].getStyle();
 			if (!(style.equals(defaultStyle))) {
+				winBoxes.add(array[i][row]);
 				for (int j = i + 1; j<= i+3; j++) {
 					String style2 = array[j][row].getStyle();
 					if(style.equals(style2)){
 						// array[j][row].setText(row+","+j);
+						winBoxes.add(array[j][row]);
 						counter++;
 					} else {
+						winBoxes.clear();
 						counter = 0;
 					}
 				}
@@ -160,6 +181,7 @@ public class Grid extends GridPane {
 				return true;
 			}
 		}
+		winBoxes.clear();
 		return false;
 	}
 	private boolean checkCol(int col) {
@@ -167,10 +189,13 @@ public class Grid extends GridPane {
 		for (int i = 0; i < 3; i++) {
 			String style = array[col][i].getStyle();
 			if (!(style.equals(defaultStyle))) {
+				winBoxes.add(array[col][i]);
 				for (int j = i+1; j<= i+3; j++) {
 					if(style.equals(array[col][j].getStyle())){
+						winBoxes.add(array[col][j]);
 						counter++;
 					} else {
+						winBoxes.clear();
 						counter = 0;
 					}
 				}
@@ -180,6 +205,7 @@ public class Grid extends GridPane {
 				return true;
 			}
 		}
+		winBoxes.clear();
 		return false;
 	}
 	
@@ -206,10 +232,13 @@ public class Grid extends GridPane {
 		while ((i+3) < 7 && (j+3) < 6) {
 			String style = array[i][j].getStyle();
 			if (!(style.equals(defaultStyle))) {
+				winBoxes.add(array[i][j]);
 				for (int k = i+1, l = j+1; k <= i+3 && l <= j+3; k++, l++) {
 					if(style.equals(array[k][l].getStyle())){
+						winBoxes.add(array[k][l]);
 						counter++;
 					} else {
+						winBoxes.clear();
 						counter = 0;
 					}
 				}
@@ -221,6 +250,7 @@ public class Grid extends GridPane {
 			i++;
 			j++;
 		}
+		winBoxes.clear();
 		return false;
 	}
 	private boolean checkRight(int i, int j) {
@@ -228,10 +258,13 @@ public class Grid extends GridPane {
 		while ((i-3) > -1 && (j+3) < 6) {
 			String style = array[i][j].getStyle();
 			if (!(style.equals(defaultStyle))) {
+				winBoxes.add(array[i][j]);
 				for (int k = i-1, l = j+1; k >= i-3 && l <= j+3; k--, l++) {
 					if(style.equals(array[k][l].getStyle())){
+						winBoxes.add(array[k][l]);
 						counter++;
 					} else {
+						winBoxes.clear();
 						counter = 0;
 					}
 				}
@@ -243,6 +276,7 @@ public class Grid extends GridPane {
 			i--;
 			j++;
 		}
+		winBoxes.clear();
 		return false;
 	}
 	public void newGame() {
