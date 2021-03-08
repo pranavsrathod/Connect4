@@ -153,6 +153,7 @@ public class JavaFXTemplate extends Application {
 			isWin = false;
 			buttonColor = "-fx-background-color: Black";  // set button color
 			defaultStyle = "-fx-background-color: Black";
+			
 			// setting up the entire menu bar
 			menu = new MenuBar();
 			gamePlay = new Menu("gamePlay");
@@ -165,14 +166,17 @@ public class JavaFXTemplate extends Application {
 			howToPlay = new MenuItem("howToPlay");
 			exit = new MenuItem("exit");
 			newGame = new MenuItem("newGame");
+			
 			// setting up menu items
 			gamePlay.getItems().add(reverse);
 			theme.getItems().addAll(theme1, theme2, original_theme);
 			options.getItems().addAll(howToPlay, newGame, exit);
+			
 			// setting menu bar
 			menu.getMenus().addAll(gamePlay, theme, options);
 		}
 		public void setButtonConfigurations() {
+			
 			// for any moves above the last row
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 5; j++) {
@@ -182,27 +186,29 @@ public class JavaFXTemplate extends Application {
 					box.setOnAction(e -> {
 						if(array[boxrow][boxcol + 1].isDisabled()) {	
 							Configure(box,boxrow,boxcol);
-							// validity.setText("For Player : " + player +" Last Move On [" + boxrow + "] [" + boxcol + "]");
 						} else {
 							validity.setText("Player : " + player +" Invalid Move");
 						}
 					});
 				}
 			}
-//					 Only valid Moves
+
+			//	Only valid Moves
 			for (int i = 0; i < 7; i++) {
 				GameButton box = array[i][5];
 				final int boxcol = 5;
 				final int boxrow = i;
 				box.setOnAction(e -> {
 					Configure(box,boxrow,boxcol);
-					// validity.setText("For Player : " + player +" Last Move On [" + boxrow + "] [" + boxcol + "]");
 				});
 			}
-			reverse.setOnAction(e -> this.reverse());
-			moveBar = new HBox(10, label, this.getValidity());	
-			// Border Pane execution
+			
+			reverse.setOnAction(e -> this.reverse());  // when reverse is pressed
+			moveBar = new HBox(10, label, this.getValidity());  // set the hBox
+			
+			// when howToPlay is pressed
 			howToPlay.setOnAction(e -> {
+				// dialog box configurations
 			      Dialog<String> dialog = new Dialog<String>();
 			      dialog.setTitle("How To Play");
 			      ButtonType type = new ButtonType("Ok", ButtonData.OK_DONE);
@@ -212,28 +218,40 @@ public class JavaFXTemplate extends Application {
 			      dialog.getDialogPane().getButtonTypes().add(type);
 			      dialog.showAndWait();
 			});
+			
+			// if new is pressed
 			newGame.setOnAction(e -> this.newGame());
 			exit.setOnAction(e-> {
 		    	System.exit(0);
 			});
+			
+			// if theme1 is pressed
 			theme1.setOnAction(e -> {
 				board.setStyle("-fx-background-color: DeepSkyBlue;");
 			});
 			
+			// if theme2 is pressed
 			theme2.setOnAction(e -> {
 				board.setStyle("-fx-background-color: #228B22;");
 			});
+			
+			// if original theme is pressed
 			original_theme.setOnAction(e -> {
 				board.setStyle("-fx-background-color: White;");
 			});
+			
+			// setting the gameScene
 			gameScene = new Scene (new VBox(20, menu, board, moveBar), 600, 600);
 		}
+		
+		// switching the players and checking the win condition.
 		private void Configure(GameButton box, int boxrow, int boxcol) {
-			countTile++;
+			countTile++;  // increment the counter when buttons are clicked.
 			if (player == 1) {
-				// stack_Buttons.push(box);
-				buttonColor = "-fx-background-color: Red;";
+				buttonColor = "-fx-background-color: Red;";  // changing the style
 				box.setStyle(buttonColor);
+				
+				// check only after 7 clicks.
 				if (countTile >= 7) {
 					checkWin(boxrow, boxcol);
 				}
@@ -241,18 +259,23 @@ public class JavaFXTemplate extends Application {
 			} else {
 				buttonColor = "-fx-background-color: Yellow;";
 				box.setStyle(buttonColor);
+				
+				// check only after 7 clicks
 				if (countTile >= 7) {
 					checkWin(boxrow, boxcol);
 				}
-//				box.setStyle("-fx-background-color: Yellow;");
 				player = 1;
 			}
+			
 			if(!isWin) {
 				validity.setText(" Last Move On [" + boxrow + "] [" + boxcol + "] Next Move For Player : " + player);
 			}
-			stack_Buttons.push(box);
-			box.setDisable(true);
+			
+			stack_Buttons.push(box);  // pushing all the buttons in a stack
+			box.setDisable(true);  // disabling the box.
 		}
+		
+		// function definition for undo moves.
 		public void reverse() {
 			int count = 0;
 			int storeRow = 0;
@@ -260,8 +283,10 @@ public class JavaFXTemplate extends Application {
 			GameButton remove;
 			GameButton temp = null;
 			count = stack_Buttons.size();
+			
+			// pop only if not empty
 			if (!stack_Buttons.isEmpty()) {
-				remove = stack_Buttons.pop();
+				remove = stack_Buttons.pop();  // remove acts like a temporary
 				remove.setStyle("-fx-background-color: Black");
 				remove.setDisable(false);
 				if (player == 1) {
@@ -270,9 +295,13 @@ public class JavaFXTemplate extends Application {
 				} else {
 					player = 1;
 				}
+				
+				// check for the top position of the stack
 				if (!stack_Buttons.empty()) {
 					temp = stack_Buttons.peek();
 				}
+				
+				// get the value of i, j for the message.
 				for (int i = 0; i < 7; i++) {
 					for (int j = 0; j < 6; j++) {
 						if (array[i][j] == temp) {
@@ -289,51 +318,69 @@ public class JavaFXTemplate extends Application {
 			}
 			
 		}
+		
+		// checkWin function definition
 		private void checkWin(int row, int col) {
-			isWin = checkRow(col);
+			isWin = checkRow(col);  // first checkRow
 			if (!isWin) {
-				isWin = checkCol(row);
+				isWin = checkCol(row);  // checkCol if checkRow is false
 				if(!isWin) {
-					isWin = checkDiagonal();
+					isWin = checkDiagonal();  // checkDiagnol if checkRow is false
 				}
 			}
+			// if isWin is true
 			if (isWin || countTile == 42) {
 				displayWin();
 				winScene();
 			}
 		}
 		private void winScene() {
-			reverse.setDisable(true);
+			reverse.setDisable(true); // cannot do reverse after winning the game.
+			
+			// set the gif
 			Image newImage = new Image("tenor.gif");
 			BackgroundSize Size = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
+			
+			// setting buttons
 			Button exit = new Button("Exit");
 			Button restart = new Button("Play Again");
 			exit.setPrefWidth(150);
 			restart.setPrefWidth(150);
 			exit.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 			restart.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+			
+			// set the hBox for the two buttons 
 			HBox var3 = new HBox(50, restart, exit);
 			var3.setAlignment(Pos.TOP_CENTER);
 			
-			
+			// setting messages
 			Label message = new Label("---------------- !! GAME OVER !! -------------------");
 			message.setBackground(new Background(new BackgroundFill(Color.LAWNGREEN,null, null)));
 			Label message2 = new Label("WINNER IS PLAYER:" + player +"");
+			
+			// if all buttons are clicked and there is no win
 			if(countTile == 42) {
 				message2.setText("IT IS A TIE");
 			}
+			
+			// setting VBox for two messages
 			VBox vbox = new VBox(50,message, message2);
 			vbox.setAlignment(Pos.CENTER);
 			message2.setBackground(new Background(new BackgroundFill(Color.WHITE,null, null)));
 			message.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 			message2.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 25));
+			
+			// VBox for two messages and buttons.
 			VBox var = new VBox(50, vbox, var3);
+			
 			BorderPane exitPane = new BorderPane();
 			exitPane.setCenter(var);
 			exitPane.setBackground(new Background(new BackgroundImage(newImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, Size)));
 			exit.setOnAction(e -> {
 				System.exit(0);
 			});
+			
+			// when restart is pressed
 			restart.setOnAction(e -> {
 				dummyStage.setScene(gameScene());
 				newGame();
@@ -347,27 +394,35 @@ public class JavaFXTemplate extends Application {
 			});
 			halt.play();
 		}
+		
+		// highlights the win sequence
 		private void displayWin() {
+			// looping through the board disabling all the buttons
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 6; j++) {
 					array[i][j].setDisable(true);
-					array[i][j].setStyle("-fx-background-color: #FFFFE0");
+					array[i][j].setStyle("-fx-background-color: #FFFFE0");  // make them white
 				}
 			}
 			for (int i =0; i < winBoxes.size(); i++) {
+				// only win sequence becomes green.
 				winBoxes.elementAt(i).setStyle("-fx-background-color: Green");;
 			}
-			winBoxes.clear();
+			winBoxes.clear();  // clearing the vector.
 		}
+		
+		// only checking the row
 		private boolean checkRow(int row) {
 			int counter = 0;
+			// loop through a particular row
 			for (int i = 0; i < 4; i++) {
 				String style = array[i][row].getStyle();
 				if (!(style.equals(defaultStyle))) {
-					winBoxes.add(array[i][row]);
+					winBoxes.add(array[i][row]);  // adding buttons to the vector
+					// loop through the row
 					for (int j = i + 1; j<= i+3; j++) {
 						String style2 = array[j][row].getStyle();
-						if(style.equals(style2)){
+						if(style.equals(style2)){  // check for equal colors
 							winBoxes.add(array[j][row]);
 							counter++;
 						} else {
@@ -390,8 +445,9 @@ public class JavaFXTemplate extends Application {
 				String style = array[col][i].getStyle();
 				if (!(style.equals(defaultStyle))) {
 					winBoxes.add(array[col][i]);
+					// loop through the column
 					for (int j = i+1; j<= i+3; j++) {
-						if(style.equals(array[col][j].getStyle())){
+						if(style.equals(array[col][j].getStyle())){  // check for equal colors
 							winBoxes.add(array[col][j]);
 							counter++;
 						} else {
@@ -409,8 +465,9 @@ public class JavaFXTemplate extends Application {
 			return false;
 		}
 		
-		
+		// check for diagnol
 		private boolean checkDiagonal() {
+			// as there are 4:3 possibilities for left diagnol
 			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 3; j++) {
 					if (checkLeft(i,j)) {
@@ -418,6 +475,8 @@ public class JavaFXTemplate extends Application {
 					}
 				}
 			}
+			
+			// as there are 4:3 possibilities for right diagnol.
 			for (int i = 6; i > 2; i--) {
 				for (int j = 0; j < 3; j++) {
 					if (checkRight(i,j)) {
@@ -427,12 +486,15 @@ public class JavaFXTemplate extends Application {
 			}
 			return false;
 		}
+		
+		// checkLeft diagonal
 		private boolean checkLeft(int i, int j) {
 			int counter = 0;
+			// check for extreme ends and check only left diagonals
 			while ((i+3) < 7 && (j+3) < 6) {
 				String style = array[i][j].getStyle();
 				if (!(style.equals(defaultStyle))) {
-					winBoxes.add(array[i][j]);
+					winBoxes.add(array[i][j]);  // add the buttons in a vector
 					for (int k = i+1, l = j+1; k <= i+3 && l <= j+3; k++, l++) {
 						if(style.equals(array[k][l].getStyle())){
 							winBoxes.add(array[k][l]);
@@ -455,6 +517,7 @@ public class JavaFXTemplate extends Application {
 		}
 		private boolean checkRight(int i, int j) {
 			int counter = 0;
+			// check for combinations of four from right to left.
 			while ((i-3) > -1 && (j+3) < 6) {
 				String style = array[i][j].getStyle();
 				if (!(style.equals(defaultStyle))) {
@@ -479,16 +542,20 @@ public class JavaFXTemplate extends Application {
 			winBoxes.clear();
 			return false;
 		}
+		
+		// restart function
 		public void newGame() {
 			GameButton remove;
+			// clear all the buttons that were clicked
 			while (!stack_Buttons.isEmpty()) {
 				remove = stack_Buttons.pop();
 				remove.setStyle("-fx-background-color: Black");
-				remove.setDisable(false);
+				remove.setDisable(false);  // buttons could be pressed again
 			}
+			// set this text
 			validity.setText("No - Move!");
 			validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-			player = 1;
+			player = 1;  // back to player one
 			isWin = false;
 		}
 		
