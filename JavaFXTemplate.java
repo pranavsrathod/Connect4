@@ -2,7 +2,15 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.Vector;
-
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.geometry.Pos;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
@@ -48,6 +56,7 @@ public class JavaFXTemplate extends Application {
 	//feel free to remove the starter code from this method
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		HBox root2 = new HBox();
 		// TODO Auto-generated method stub
 		//dummyStage = new Stage();
 		dummyStage = primaryStage;
@@ -56,17 +65,22 @@ public class JavaFXTemplate extends Application {
 		dummyStage.setTitle("Welcome to Connect 4");
 		
 		// ------------------------------------------------------------------------------------------------------------------
+		Image myImage = new Image("Start.gif");
+		BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
 		b1 = new Button("Start");
+		root2.getChildren().add(b1);
+		root2.setAlignment(Pos.CENTER);
 		b1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		Label label = new Label("-------------- !! WELCOME TO CONNECT 4 !! --------------");
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		b1.setPrefWidth(100);
-		root = new VBox(10,label, b1);
+		root = new VBox(300,label,root2);
 		/*
 		 add an image to the background
 		 */
 		borderPane = new BorderPane();
 		borderPane.setCenter(root);
+		borderPane.setBackground(new Background(new BackgroundImage(myImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize)));
 		b1.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
 		Scene welcome = new Scene(borderPane, 500,500);
 		// ------------------------------------------------------------------------------------------------------------------
