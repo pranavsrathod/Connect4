@@ -71,7 +71,8 @@ public class JavaFXTemplate extends Application {
 		root2.getChildren().add(b1);
 		root2.setAlignment(Pos.CENTER);
 		b1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-		Label label = new Label("-------------- !! WELCOME TO CONNECT 4 !! --------------");
+		Label label = new Label("-------------- !! WELCOME TO CONNECT 4 !! -------------------");
+		label.setBackground(new Background(new BackgroundFill(Color.ORANGE,null, null)));
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		b1.setPrefWidth(100);
 		root = new VBox(300,label,root2);
