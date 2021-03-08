@@ -143,7 +143,6 @@ public class JavaFXTemplate extends Application {
 			// for building the grid
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 6; j++) {
-					String s = i+","+j;
 					GameButton box = new GameButton();
 					board.add(box, i, j);
 					array[i][j] = box;
@@ -297,46 +296,55 @@ public class JavaFXTemplate extends Application {
 					isWin = checkDiagonal();
 				}
 			}
-			if (isWin) {
+			if (isWin || countTile == 42) {
 				displayWin();
-				reverse.setDisable(true);
-				Image newImage = new Image("tenor.gif");
-				BackgroundSize Size = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
-				Button exit = new Button("Exit");
-				Button restart = new Button("Play Again");
-				exit.setPrefWidth(150);
-				restart.setPrefWidth(150);
-				exit.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-				restart.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-				VBox var = null;
-				HBox var3 = new HBox(50, restart, exit);
-				var3.setAlignment(Pos.TOP_CENTER);
-				Label message = new Label("---------------- !! GAME OVER !! -------------------");
-				message.setBackground(new Background(new BackgroundFill(Color.LAWNGREEN,null, null)));
-				Label message2 = new Label("WINNER IS PLAYER:" + player +"");
-				VBox vbox = new VBox(50,message, message2);
-				vbox.setAlignment(Pos.CENTER);
-				message2.setBackground(new Background(new BackgroundFill(Color.WHITE,null, null)));
-				message.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-				message2.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-				var = new VBox(50, vbox, var3);
-				BorderPane exitPane = new BorderPane();
-				exitPane.setCenter(var);
-				exitPane.setBackground(new Background(new BackgroundImage(newImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, Size)));
-				exit.setOnAction(e -> {
-					System.exit(0);
-				});
-				restart.setOnAction(e -> {
-					dummyStage.setScene(gameScene());
-					newGame();
-				});
-				PauseTransition halt = new PauseTransition(Duration.seconds(2));
-				halt.setOnFinished(e -> {
-					dummyStage.setScene(new Scene(exitPane, 400, 400));
-					dummyStage.show();
-				});
-				halt.play();
+				winScene();
 			}
+		}
+		private void winScene() {
+			reverse.setDisable(true);
+			Image newImage = new Image("tenor.gif");
+			BackgroundSize Size = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
+			Button exit = new Button("Exit");
+			Button restart = new Button("Play Again");
+			exit.setPrefWidth(150);
+			restart.setPrefWidth(150);
+			exit.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+			restart.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+			HBox var3 = new HBox(50, restart, exit);
+			var3.setAlignment(Pos.TOP_CENTER);
+			
+			
+			Label message = new Label("---------------- !! GAME OVER !! -------------------");
+			message.setBackground(new Background(new BackgroundFill(Color.LAWNGREEN,null, null)));
+			Label message2 = new Label("WINNER IS PLAYER:" + player +"");
+			if(countTile == 42) {
+				message2.setText("IT IS A TIE");
+			}
+			VBox vbox = new VBox(50,message, message2);
+			vbox.setAlignment(Pos.CENTER);
+			message2.setBackground(new Background(new BackgroundFill(Color.WHITE,null, null)));
+			message.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+			message2.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 25));
+			VBox var = new VBox(50, vbox, var3);
+			BorderPane exitPane = new BorderPane();
+			exitPane.setCenter(var);
+			exitPane.setBackground(new Background(new BackgroundImage(newImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, Size)));
+			exit.setOnAction(e -> {
+				System.exit(0);
+			});
+			restart.setOnAction(e -> {
+				dummyStage.setScene(gameScene());
+				newGame();
+			});
+			
+			// This will be use to delay for 3 seconds before the scene changes to the win scene
+			PauseTransition halt = new PauseTransition(Duration.seconds(3));
+			halt.setOnFinished(e -> {
+				dummyStage.setScene(new Scene(exitPane, 400, 400));
+				dummyStage.show();
+			});
+			halt.play();
 		}
 		private void displayWin() {
 			for (int i = 0; i < 7; i++) {
@@ -359,7 +367,6 @@ public class JavaFXTemplate extends Application {
 					for (int j = i + 1; j<= i+3; j++) {
 						String style2 = array[j][row].getStyle();
 						if(style.equals(style2)){
-							// array[j][row].setText(row+","+j);
 							winBoxes.add(array[j][row]);
 							counter++;
 						} else {
@@ -369,7 +376,7 @@ public class JavaFXTemplate extends Application {
 					}
 				}
 				if (counter == 3) {
-					validity.setText("PLAYER " + player + " WON ROW!!!!");
+					validity.setText("PLAYER " + player + " WON BY MATCHING 4 in A ROW!!!!");
 					return true;
 				}
 			}
@@ -393,7 +400,7 @@ public class JavaFXTemplate extends Application {
 					}
 				}
 				if (counter == 3) {
-					validity.setText("PLAYER " + player + " WON COLUMN!!!!");
+					validity.setText("PLAYER " + player + " WON BY MATCHING 4 in A COLUMN!!!!");
 					return true;
 				}
 			}
@@ -481,16 +488,11 @@ public class JavaFXTemplate extends Application {
 			validity.setText("No - Move!");
 			validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 			player = 1;
-		}
-		public boolean getWin() {
-			return isWin;
+			isWin = false;
 		}
 		
 		public Label getValidity() {
 			return validity;
-		}
-		public GridPane getBoard() {
-			return board;
 		}
 		public Scene getScene() {
 			return gameScene;
