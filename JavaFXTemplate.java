@@ -58,8 +58,7 @@ public class JavaFXTemplate extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		HBox root2 = new HBox();
 		// TODO Auto-generated method stub
-		//dummyStage = new Stage();
-		dummyStage = primaryStage;
+		dummyStage = primaryStage;  // set primary to dummy stage.
 		
 		sceneMap = new HashMap<String,Scene>();
 		dummyStage.setTitle("Welcome to Connect 4");
@@ -68,35 +67,36 @@ public class JavaFXTemplate extends Application {
 		Image myImage = new Image("Start.gif");
 		BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
 		b1 = new Button("Start");
-		root2.getChildren().add(b1);
-		root2.setAlignment(Pos.CENTER);
-		b1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		root2.getChildren().add(b1);  // adding button to HBox
+		root2.setAlignment(Pos.CENTER);  // setting position to center
+		b1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));  // setting font
 		Label label = new Label("-------------- !! WELCOME TO CONNECT 4 !! -------------------");
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		label.setBackground(new Background(new BackgroundFill(Color.ORANGE,null, null)));
 		b1.setPrefWidth(100);
-		root = new VBox(300,label,root2);
+		root = new VBox(300,label,root2);  // setting the vBox
 		/*
 		 add an image to the background
 		 */
 		borderPane = new BorderPane();
 		borderPane.setCenter(root);
 		borderPane.setBackground(new Background(new BackgroundImage(myImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize)));
+		// when b1 button gets clicked.
 		b1.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
 		Scene welcome = new Scene(borderPane, 500,500);
 		// ------------------------------------------------------------------------------------------------------------------
-		
+		// adding the scenes to the map.
 		sceneMap.put("welcome", welcome);
 		sceneMap.put("game", gameScene());
-		
+		// getting the scene from map and setting in a dummy stage.
 		dummyStage.setScene(sceneMap.get("welcome"));
 		dummyStage.show();
 	}
 	
 	public Scene gameScene() {
-		object = new Grid();
-		object.setButtonConfigurations();
-		return object.getScene();
+		object = new Grid();  // allocating memory to the object.
+		object.setButtonConfigurations();  // setting up the grid
+		return object.getScene();  // returning the scene
 	}
 	private class Grid{
 		private Scene gameScene;
@@ -132,9 +132,7 @@ public class JavaFXTemplate extends Application {
 			label = new Label("MOVE : ");
 			label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 			validity = new Label("No - Move");
-			//label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 			validity.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-			//gamePlay.setPrefWidth(50);
 			array = new GameButton[7][6];
 			board = new GridPane();
 			board.setVgap(10);
@@ -143,17 +141,19 @@ public class JavaFXTemplate extends Application {
 			// for building the grid
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 6; j++) {
+					String s = i+","+j;
 					GameButton box = new GameButton();
 					board.add(box, i, j);
 					array[i][j] = box;
 				}
 			}
-			board.setStyle("-fx-background-color: White");
+			board.setStyle("-fx-background-color: White");  // set background of the board
 			player = 1;
 			countTile = 0;
 			isWin = false;
-			buttonColor = "-fx-background-color: Black";
+			buttonColor = "-fx-background-color: Black";  // set button color
 			defaultStyle = "-fx-background-color: Black";
+			// setting up the entire menu bar
 			menu = new MenuBar();
 			gamePlay = new Menu("gamePlay");
 			theme = new Menu("theme");
@@ -165,14 +165,15 @@ public class JavaFXTemplate extends Application {
 			howToPlay = new MenuItem("howToPlay");
 			exit = new MenuItem("exit");
 			newGame = new MenuItem("newGame");
+			// setting up menu items
 			gamePlay.getItems().add(reverse);
 			theme.getItems().addAll(theme1, theme2, original_theme);
 			options.getItems().addAll(howToPlay, newGame, exit);
+			// setting menu bar
 			menu.getMenus().addAll(gamePlay, theme, options);
 		}
 		public void setButtonConfigurations() {
 			// for any moves above the last row
-			
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 5; j++) {
 					GameButton box = array[i][j];
