@@ -1,8 +1,13 @@
+// CS 342
+// Project 2 : Connect4 
+// Pranav Rathod and Parth Tawde
+// pratho2 and ptawde2
+// This program is GUI based and generates a game called Connect4
+// This game is particularly based on connecting the four tiles
+// either diagonally, horizonatally or vertically.
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Stack;
 import java.util.Vector;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundSize;
@@ -20,7 +25,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
-import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.image.ImageView;
@@ -290,8 +294,7 @@ public class JavaFXTemplate extends Application {
 				remove.setStyle("-fx-background-color: Black");
 				remove.setDisable(false);
 				if (player == 1) {
-//					stack_Buttons.push(box);
-					player = 2;
+					player = 2;  // switching players
 				} else {
 					player = 1;
 				}
