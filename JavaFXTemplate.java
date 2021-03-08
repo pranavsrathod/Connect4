@@ -72,8 +72,8 @@ public class JavaFXTemplate extends Application {
 		root2.setAlignment(Pos.CENTER);
 		b1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 		Label label = new Label("-------------- !! WELCOME TO CONNECT 4 !! -------------------");
-		label.setBackground(new Background(new BackgroundFill(Color.ORANGE,null, null)));
 		label.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+		label.setBackground(new Background(new BackgroundFill(Color.ORANGE,null, null)));
 		b1.setPrefWidth(100);
 		root = new VBox(300,label,root2);
 		/*
@@ -144,7 +144,7 @@ public class JavaFXTemplate extends Application {
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 6; j++) {
 					String s = i+","+j;
-					GameButton box = new GameButton(s);
+					GameButton box = new GameButton();
 					board.add(box, i, j);
 					array[i][j] = box;
 				}
@@ -224,9 +224,9 @@ public class JavaFXTemplate extends Application {
 				board.setStyle("-fx-background-color: #228B22;");
 			});
 			original_theme.setOnAction(e -> {
-				board.setStyle("-fx-background-color: Black;");
+				board.setStyle("-fx-background-color: White;");
 			});
-			gameScene = new Scene (new VBox(20, menu, board, moveBar), 650, 650);
+			gameScene = new Scene (new VBox(20, menu, board, moveBar), 600, 600);
 		}
 		private void Configure(GameButton box, int boxrow, int boxcol) {
 			countTile++;
@@ -258,7 +258,7 @@ public class JavaFXTemplate extends Application {
 			int storeRow = 0;
 			int storeColumn = 0;
 			GameButton remove;
-			GameButton temp;
+			GameButton temp = null;
 			count = stack_Buttons.size();
 			if (!stack_Buttons.isEmpty()) {
 				remove = stack_Buttons.pop();
@@ -270,7 +270,9 @@ public class JavaFXTemplate extends Application {
 				} else {
 					player = 1;
 				}
-				temp = stack_Buttons.peek();
+				if (!stack_Buttons.empty()) {
+					temp = stack_Buttons.peek();
+				}
 				for (int i = 0; i < 7; i++) {
 					for (int j = 0; j < 6; j++) {
 						if (array[i][j] == temp) {
@@ -297,13 +299,40 @@ public class JavaFXTemplate extends Application {
 			}
 			if (isWin) {
 				displayWin();
-				Label message = new Label("CONGRATULATIONS GAME OVER");
+				reverse.setDisable(true);
+				Image newImage = new Image("tenor.gif");
+				BackgroundSize Size = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
+				Button exit = new Button("Exit");
+				Button restart = new Button("Play Again");
+				exit.setPrefWidth(150);
+				restart.setPrefWidth(150);
+				exit.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+				restart.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+				VBox var = null;
+				HBox var3 = new HBox(50, restart, exit);
+				var3.setAlignment(Pos.TOP_CENTER);
+				Label message = new Label("---------------- !! GAME OVER !! -------------------");
+				message.setBackground(new Background(new BackgroundFill(Color.LAWNGREEN,null, null)));
+				Label message2 = new Label("WINNER IS PLAYER:" + player +"");
+				VBox vbox = new VBox(50,message, message2);
+				vbox.setAlignment(Pos.CENTER);
+				message2.setBackground(new Background(new BackgroundFill(Color.WHITE,null, null)));
 				message.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+				message2.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+				var = new VBox(50, vbox, var3);
 				BorderPane exitPane = new BorderPane();
-				exitPane.setCenter(message);
+				exitPane.setCenter(var);
+				exitPane.setBackground(new Background(new BackgroundImage(newImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, Size)));
+				exit.setOnAction(e -> {
+					System.exit(0);
+				});
+				restart.setOnAction(e -> {
+					dummyStage.setScene(gameScene());
+					newGame();
+				});
 				PauseTransition halt = new PauseTransition(Duration.seconds(2));
 				halt.setOnFinished(e -> {
-					dummyStage.setScene(new Scene(exitPane, 100, 100));
+					dummyStage.setScene(new Scene(exitPane, 400, 400));
 					dummyStage.show();
 				});
 				halt.play();
