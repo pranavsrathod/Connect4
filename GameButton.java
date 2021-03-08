@@ -6,6 +6,7 @@ public class GameButton extends Button{
 	public int color;
 	public 
 	GameButton(){
+		// setting the default instances of the button
 		super("");
 		this.setPrefSize(100, 100);
 		this.setStyle("-fx-background-color: Black");
